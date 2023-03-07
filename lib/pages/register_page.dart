@@ -1,5 +1,9 @@
 import 'package:chat_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:chat_app/helpers/mostrar_alerta.dart';
+import 'package:chat_app/services/auth_service.dart';
 
 class RegisterPage extends StatelessWidget {
   @override
@@ -47,6 +51,7 @@ class __FormState extends State<_Form> {
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
     return Container(
       margin: EdgeInsets.only(top: 40),
       padding: EdgeInsets.symmetric(horizontal: 50),
@@ -74,11 +79,24 @@ class __FormState extends State<_Form> {
 
           //TODO: Crear botón
           BotonAzul(
-              text: 'Ingrese',
-              onPressed: () {
-                print(emailCtrl.text);
-                print(passCtrl.text);
-              })
+              text: 'Registrarse',
+              onPressed: authService.isLogin
+                  ? null
+                  : () async {
+                      final register = await authService.register(
+                          nameCtrl.text.trim(),
+                          emailCtrl.text.trim(),
+                          passCtrl.text.trim());
+                      Future.microtask(() {
+                        if (register == true) {
+                          //TODO: Conectar al socket server
+                          Navigator.popAndPushNamed(context, 'usuarios');
+                        } else {
+                          mostrarAlerta(
+                              context, 'Registro Incorecto', register);
+                        }
+                      });
+                    })
         ],
       ),
     );

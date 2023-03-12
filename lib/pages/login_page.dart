@@ -1,3 +1,4 @@
+import 'package:chat_app/services/socket_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -49,6 +50,7 @@ class __FormState extends State<_Form> {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
+    final socketService = Provider.of<SocketService>(context);
     return Container(
       margin: EdgeInsets.only(top: 40),
       padding: EdgeInsets.symmetric(horizontal: 50),
@@ -80,8 +82,8 @@ class __FormState extends State<_Form> {
                           emailCtrl.text.trim(), passCtrl.text.trim());
 
                       if (loginOk) {
-                        //TODO:Navegar a otra pantalla
                         //TODO:Connectar a nuestro socket server
+                        socketService.connect();
                         Future.microtask(() => Navigator.pushReplacementNamed(
                             context, 'usuarios'));
                       } else {
